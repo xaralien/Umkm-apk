@@ -11,7 +11,7 @@ features to the website:
   are never blocked on any page
 
 App name: **Kodesis Market**  •  Package: `id.kodesis.market`
-The launcher icon (green storefront) is already generated for every screen density,
+The launcher icon (SAPA UMKM logo) is already generated for every screen density,
 including an adaptive icon for Android 8+.
 
 ---
