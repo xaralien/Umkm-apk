@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         // Switch from the launch (splash) theme to the normal app theme
-        setTheme(R.style.Theme_KodesisMarket)
+        setTheme(R.style.Theme_SapaUMKM)
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity() {
         s.cacheMode = WebSettings.LOAD_DEFAULT
         s.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) s.safeBrowsingEnabled = true
-        s.userAgentString = s.userAgentString + " KodesisMarketApp/1.0"
+        s.userAgentString = s.userAgentString + " SapaUMKMApp/1.0"
 
         WebView.setWebContentsDebuggingEnabled(true)
 

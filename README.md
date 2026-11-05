@@ -1,4 +1,4 @@
-# Kodesis Market — UMKM WebView App
+# Sapa UMKM — UMKM WebView App
 
 Android app that wraps **https://market.kodesis.id/** and bridges native device
 features to the website:
@@ -10,7 +10,7 @@ features to the website:
 - **Screenshots allowed** -> unlike the Kisa app, screenshots and screen recording
   are never blocked on any page
 
-App name: **Kodesis Market**  •  Package: `id.kodesis.market`
+App name: **Sapa UMKM**  •  Package: `id.kodesis.market`
 The launcher icon (SAPA UMKM logo) is already generated for every screen density,
 including an adaptive icon for Android 8+.
 

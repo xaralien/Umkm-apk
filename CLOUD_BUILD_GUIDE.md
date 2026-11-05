@@ -34,7 +34,7 @@ bottom. Keep the keystore safe: you need the same one for every app update.)
 
 ### 3. Run the build
 - Go to the **Actions** tab in your repo.
-- Open **Build UMKM Market (APK + AAB)** and click **Run workflow**
+- Open **Build Sapa UMKM (APK + AAB)** and click **Run workflow**
   (it also runs automatically on every push).
 - When it finishes (green check), open the run and download the files under
   **Artifacts**: `UMKM-debug-apk` and `UMKM-release-aab`.

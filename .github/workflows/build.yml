@@ -1,4 +1,4 @@
-name: Build UMKM Market (APK + AAB)
+name: Build Sapa UMKM (APK + AAB)
 
 on:
   push:
