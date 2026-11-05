@@ -25,9 +25,9 @@ Add these four:
 | Secret name        | Value                                              |
 |--------------------|----------------------------------------------------|
 | KEYSTORE_BASE64    | the full contents of `umkm.jks.base64.txt`    |
-| KEYSTORE_PASSWORD  | `umkm2026`                                    |
+| KEYSTORE_PASSWORD  | (password di SECRETS.txt)                    |
 | KEY_ALIAS          | `umkm`                                         |
-| KEY_PASSWORD       | `umkm2026`                                    |
+| KEY_PASSWORD       | (password di SECRETS.txt)                    |
 
 (You can change these passwords by generating your own keystore — command at the
 bottom. Keep the keystore safe: you need the same one for every app update.)
