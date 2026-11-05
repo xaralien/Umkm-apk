@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.KodesisMarket" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor" tools:targetApi="21">@color/status_bar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+    </style>
+
+    <!-- Splash: instant white window with the app logo -->
+    <style name="Theme.KodesisMarket.Launch" parent="Theme.KodesisMarket">
+        <item name="android:windowBackground">@color/splash_bg</item>
+        <item name="android:statusBarColor" tools:targetApi="21">@color/splash_bg</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:navigationBarColor" tools:targetApi="21">@color/splash_bg</item>
+    </style>
+</resources>
