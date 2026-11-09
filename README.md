@@ -6,6 +6,9 @@ features to the website:
 - **Location / GPS** -> `navigator.geolocation`
 - **Camera + Mic** -> live camera (`getUserMedia`) and photo capture in file inputs
 - **Local files** -> `<input type="file">` uploads (with a "take a photo" option)
+- **Print** -> the site's print buttons (`window.print()`, also inside iframes,
+  e.g. receipts) open Android's print dialog: Wi-Fi printers, Save as PDF, or
+  Bluetooth thermal printers via a print-service app such as RawBT
 - **Downloads** -> files the site offers are saved to the Downloads folder
 - **Screenshots allowed** -> unlike the Kisa app, screenshots and screen recording
   are never blocked on any page

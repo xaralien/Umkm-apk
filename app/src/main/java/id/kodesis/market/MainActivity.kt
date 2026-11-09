@@ -13,10 +13,13 @@ import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.print.PrintAttributes
+import android.print.PrintManager
 import android.provider.MediaStore
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.GeolocationPermissions
+import android.webkit.JavascriptInterface
 import android.webkit.MimeTypeMap
 import android.webkit.PermissionRequest
 import android.webkit.URLUtil
@@ -42,6 +45,8 @@ import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -315,6 +320,14 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = createWebViewClient()
         webView.webChromeClient = createWebChromeClient()
 
+        // Tombol "Cetak" di website (window.print) -> menu cetak Android
+        webView.addJavascriptInterface(PrintBridge(), "AndroidPrint")
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+            // Dipasang sebelum script situs jalan, di halaman utama maupun iframe
+            WebViewCompat.addDocumentStartJavaScript(webView, PRINT_SHIM_JS, setOf("*"))
+            printShimAtStart = true
+        }
+
         // Any file the website triggers a download for (PDF, image, invoice, etc.)
         webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, _ ->
             startDownload(url, userAgent, contentDisposition, mimetype)
@@ -381,6 +394,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            // WebView lama tanpa DOCUMENT_START_SCRIPT: pasang setelah halaman selesai
+            if (!printShimAtStart) view?.evaluateJavascript(PRINT_SHIM_JS, null)
             swipeRefresh.isRefreshing = false
             hideSplash()
         }
@@ -512,6 +527,73 @@ class MainActivity : AppCompatActivity() {
         cb.onReceiveValue(results)
         filePathCallback = null
         cameraImageUri = null
+    }
+
+    // ---------- Print ----------
+
+    private var printShimAtStart = false
+
+    // Menahan WebView tak terlihat yang dipakai mencetak isi iframe sampai cetak dimulai
+    private var printWebView: WebView? = null
+
+    /**
+     * Mengganti window.print() di setiap halaman & iframe. Halaman utama dicetak
+     * langsung dari WebView; iframe (pola umum struk/nota) mengirim HTML-nya sendiri
+     * supaya yang tercetak hanya struknya, bukan seluruh halaman.
+     */
+    private val PRINT_SHIM_JS = """
+        (function () {
+          if (window.__sapaPrintShim || !window.AndroidPrint) return;
+          window.__sapaPrintShim = true;
+          window.print = function () {
+            try {
+              if (window.top === window) {
+                AndroidPrint.printPage(document.title || '');
+              } else {
+                AndroidPrint.printHtml(document.documentElement.outerHTML,
+                                       location.href, document.title || '');
+              }
+            } catch (e) { AndroidPrint.printPage(document.title || ''); }
+          };
+        })();
+    """.trimIndent()
+
+    private inner class PrintBridge {
+        @JavascriptInterface
+        fun printPage(title: String?) {
+            runOnUiThread { printWebView(webView, title) }
+        }
+
+        @JavascriptInterface
+        fun printHtml(html: String?, baseUrl: String?, title: String?) {
+            if (html.isNullOrBlank()) return printPage(title)
+            runOnUiThread {
+                val base = baseUrl?.takeIf { it.startsWith("http") } ?: webView.url
+                val offscreen = WebView(this@MainActivity)
+                printWebView = offscreen
+                offscreen.webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView, url: String?) {
+                        printWebView(view, title)
+                        printWebView = null
+                    }
+                }
+                offscreen.loadDataWithBaseURL(base, html, "text/html", "UTF-8", null)
+            }
+        }
+    }
+
+    private fun printWebView(view: WebView, title: String?) {
+        try {
+            val pm = getSystemService(Context.PRINT_SERVICE) as PrintManager
+            val jobName = title?.takeIf { it.isNotBlank() } ?: getString(R.string.app_name)
+            pm.print(
+                jobName,
+                view.createPrintDocumentAdapter(jobName),
+                PrintAttributes.Builder().build()
+            )
+        } catch (e: Exception) {
+            Toast.makeText(this, "Tidak bisa mencetak: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // ---------- Helpers ----------
